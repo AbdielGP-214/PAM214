@@ -1,10 +1,15 @@
-// operadodores
-let numberone = 100;
-let numbertwo = 500;
-let result = numberone == numbertwo;
-let result = numberone <= numbertwo;
-let result = numberone >= numbertwo;
-let result = numberone != numbertwo;
-let result = numberone < numbertwo;
-let result = numberone > numbertwo;
-console.log(result);
+let passwordDB = 'pepe123'
+
+let input = 'pepe123'
+
+let result = input == passwordDB;
+
+//condicionales
+if (result == true) {
+console.log('login correcto');
+} else {
+    console.log('Contraseña incorrecta')
+}
+
+
+
