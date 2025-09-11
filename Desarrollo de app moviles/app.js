@@ -1,45 +1,17 @@
-// tipos de datos
-"Hola mundo" // string
-'Hola mundo' // string
+// Estoy creando variables
+var nameuser = "yael";
+let lastname = "alejandro"
+// reasignando el valor de la variable nameuser
 
-// number
-100000
--2.3
+nameuser = 'fidel';
 
-// boolean
-true 
-false
+const PI = 3.1415;
 
-// array
-['joe','ryan','martha']
-[1,2,3]
-[true,false,true,false]
+console.log(PI)
 
-// object
-'ryan'
-70.4
-14
-true
+// camelcase
+let UserName = 'gordon'
 
-{
-    "username": 'ryan',
-    "score": 70.4,
-    "hours":14,
-    "proffesional":true
-    
-}
-
-{
-    "username": 'joe',
-    "score": 0.4,
-    "hours":1,
-    "proffesional":false
-    
-}
-
-// sig
-console.log('esto es una cadena');
-console.log('14.3');
-console.log('true');
-console.log([1,2,3,4]);
-console.log({"username": "ryan", "score":70.4});
+/* el siguiente comentario 
+esta ocupando multiples lineas
+*/
