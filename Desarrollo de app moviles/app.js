@@ -1,7 +1,7 @@
 //bucles
-let count = 1;
-// se pueden usar todos los comparadores
-while(count <= 50) {
-    console.log(count);
-    count ++;
+let names = ['fidel','yael','mane'];
+
+for(let i = 0; i < names.length;i++)
+{
+console.log(names[i]);
 }
