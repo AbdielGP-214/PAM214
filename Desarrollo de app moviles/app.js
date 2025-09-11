@@ -1,9 +1,8 @@
 //funciones y sus parametros
-function greeting(name){
+function add(n1,n2){
 
-console.log('hello' + name);
+console.log(n1+n2);
 }
 //manda a llamar
-greeting('yael');
-greeting('fidel');
-greeting('mane');
+add(3,2);
+add(100,300);
