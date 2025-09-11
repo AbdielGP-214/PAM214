@@ -1,7 +1,9 @@
-//bucles
-let names = ['fidel','yael','mane'];
+//funciones y sus parametros
+function greeting(name){
 
-for(let i = 0; i < names.length;i++)
-{
-console.log(names[i]);
+console.log('hello' + name);
 }
+//manda a llamar
+greeting('yael');
+greeting('fidel');
+greeting('mane');
