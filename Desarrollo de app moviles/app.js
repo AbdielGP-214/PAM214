@@ -1,15 +1,9 @@
-let passwordDB = 'pepe123'
+let score = 70;
 
-let input = 'pepe123'
-
-let result = input == passwordDB;
-
-//condicionales
-if (result == true) {
-console.log('login correcto');
+if (score > 30) {
+    console.log('necesitas practicar');
+} else if (score > 15){
+    console.log('estas mejorando');
 } else {
-    console.log('Contraseña incorrecta')
+    console.log('ocupas el tutorial')
 }
-
-
-
