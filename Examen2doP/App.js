@@ -1,5 +1,5 @@
 //1. Imports: Zona de importaciones
-import { Text, StyleSheet, View, TextInput, ImageBackground, Dimensions, Button, Image,ScrollView } from 'react-native'
+import { Text, StyleSheet, View, TextInput, ImageBackground, Dimensions, Button, Image,ScrollView ,TouchableWithoutFeedback} from 'react-native'
 import React, { useState, useEffect } from 'react'
 
 const BackgroundImage = require('../Examen2doP/assets/fondo1.png')
@@ -34,18 +34,43 @@ if (showSplash) {
     )
   }
 
+  const mostrarAlerta = () => {
+    alert('elije una opcion')
+    
+  }
+
 
   return (
        
      <ImageBackground source={BackgroundImage} style={styles.background} resizeMode="cover">
       <View style={styles.overlay}>
+        <ScrollView
+      showsVerticalScrollIndicator={false}
+      >
         <View style={styles.formContainer}> 
-          <Text style={styles.titulo}>perfil </Text>
-        
           
+          <Text style={styles.titulo}>INFORMACION DE USUARIO </Text>
+          <Text style={styles.cont}></Text>
+          <Text style={styles.cont}>Nombre Completo : </Text>
+          <Text style={styles.cont}>Gonzalez Paulin Abdiel </Text>
+          <Text style={styles.cont}></Text>
+          <Text style={styles.cont}>Profesion/Titulo : </Text>
+          <Text style={styles.cont}>Ing.Sistemas </Text>
+          <Text style={styles.cont}></Text>
+          <Text style={styles.cont}>Bibliografia : </Text>
+          <Text style={styles.cont}> Ingeniero en Sistemas enfocado en la creacion de videoJuegos de genero  mundo abierto </Text>
+          <Text style={styles.cont}></Text>
+          <Text style={styles.cont}>Correo Electronico : </Text>
+          <Text style={styles.cont}>124050294@upq.edu.mx </Text>
+          <Text style={styles.cont}></Text>
+          <Text style={styles.cont}>Numero Telefonico : </Text>
+          <Text style={styles.cont}>4481503578 </Text>
+          
+          <Button color="green" title="Editar Informacion Personal" onPress={mostrarAlerta} />
           
          
         </View>
+        </ScrollView>
       </View>
     </ImageBackground>
 
@@ -93,6 +118,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     marginBottom: 15,
+  },
+  cont: { 
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
 
