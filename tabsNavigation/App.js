@@ -1,12 +1,33 @@
 import { NavigationContainer } from '@react-navigation/native';
+import 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
-
 import Home from './screens/home';
 import Profile from './screens/profile';
 import Settings from './screens/settings';
+import Detalle from './screens/detalle'; 
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="ProfileMain" 
+        component={Profile} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="Detalle" 
+        component={Detalle} 
+        options={{ title: 'Detalle' }} 
+      />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
   return (
@@ -14,13 +35,13 @@ export default function App() {
       <Tab.Navigator
         initialRouteName="Home"
         screenOptions={({ route }) => ({
-          headerShown: false,
+          headerShown: false, 
           tabBarIcon: ({ color, size }) => {
             let iconName;
 
             if (route.name === 'Home') {
               iconName = 'home';
-            } else if (route.name === 'Profile') {
+            } else if (route.name === 'Profile') { 
               iconName = 'person';
             } else if (route.name === 'Settings') {
               iconName = 'settings';
@@ -36,7 +57,7 @@ export default function App() {
         })}
       >
         <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Profile" component={Profile} />
+        <Tab.Screen name="Profile" component={ProfileStack} />
         <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
     </NavigationContainer>
