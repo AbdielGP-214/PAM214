@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, 
   StyleSheet, Alert, ActivityIndicator, Platform } from 'react-native';
 import { UsuarioController } from '../controllers/UsuarioController';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const controller = new UsuarioController();
 
@@ -11,83 +10,175 @@ export default function UsuarioView() {
   const [nombre, setNombre] = useState('');
   const [loading, setLoading] = useState(true);
   const [guardando, setGuardando] = useState(false);
+  const [editandoId, setEditandoId] = useState(null);
+  const [nuevoNombre, setNuevoNombre] = useState('');
 
-// SELECT - Cargar usuarios desde la BD
-const cargarUsuarios = useCallback(async () => {
-  try {
-    setLoading(true);
-    const data = await controller.obtenerUsuarios();
-    setUsuarios(data);
-    // ⚠️ CORREGIDO: Uso de backticks para la plantilla literal (template literal)
-    console.log(`${data.length} usuarios cargados`); 
-  } catch (error) {
-    Alert.alert('Error', error.message);
-  } finally {
-    setLoading(false);
-  }
-}, []);
-// Inicializar y cargar datos
-useEffect(() => {
-  const init = async () => {
-    await controller.initialize();
-    await cargarUsuarios();
-  };
-
-  init();
-  // avisar los cambios automáticos
-  controller.addListener(cargarUsuarios);
-
-  return () => {
-    controller.removeListener(cargarUsuarios);
-  };
-}, [cargarUsuarios]);
-// INSERT - Agregar nuevo usuario
-const handleAgregar = async () => {
-  if (guardando) return;
-  try {
-    setGuardando(true);
-    const usuarioCreado = await controller.crearUsuario(nombre);
-    // ⚠️ CORREGIDO: Uso de backticks para la plantilla literal (template literal)
-    Alert.alert('Usuario Creado', `${usuarioCreado.nombre} guardado con ID: ${usuarioCreado.id}`); 
-    setNombre('');
-  } catch (error) {
-    Alert.alert('Error', error.message);
-  } finally {
-    setGuardando(false);
-  }
-};
-// Renderizar cada usuario
-const renderUsuario = ({ item, index }) => (
-  <View style={styles.userItem}>
-    <View style={styles.userNumber}>
-      <Text style={styles.userNumberText}>{index + 1}</Text>
-    </View>
-    <View style={styles.userInfo}>
-      <Text style={styles.userName}>{item.nombre}</Text>
-      <Text style={styles.userId}>ID: {item.id}</Text>
-      <Text style={styles.userDate}>
-        {new Date(item.fechaCreacion).toLocaleDateString('es-MX', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </Text>
-    </View>
-  </View>
-);
-  return (
+ 
+  const cargarUsuarios = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await controller.obtenerUsuarios();
+      setUsuarios(data);
     
+      console.log(`${data.length} usuarios cargados`);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  
+  useEffect(() => {
+    const init = async () => {
+      await controller.initialize();
+      await cargarUsuarios();
+    };
+
+    init();
+  
+    controller.addListener(cargarUsuarios);
+
+    return () => {
+      controller.removeListener(cargarUsuarios);
+    };
+  }, [cargarUsuarios]);
+
+
+  const handleEliminar = (id) => {
+    Alert.alert(
+      'Confirmar eliminación', 
+      '¿Estás seguro de que deseas eliminar este usuario?', 
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => console.log('Eliminación cancelada'),
+          style: 'cancel', 
+        },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+       
+            try {
+              await controller.eliminarUsuario(id);
+              Alert.alert('Éxito', 'Usuario eliminado correctamente');
+            } catch (error) {
+              Alert.alert('Error', error.message);
+            }
+          },
+        },
+      ]
+    );
+  };
+ 
+
+  const confirmarEdicion = async () => {
+    if (!nuevoNombre.trim()) {
+      Alert.alert('Error', 'El nombre no puede estar vacío');
+      return;
+    }
+    try {
+      await controller.actualizarUsuario(editandoId, nuevoNombre.trim());
+      Alert.alert('Usuario actualizado');
+      setEditandoId(null);
+      setNuevoNombre('');
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
+
+
+  const handleAgregar = async () => {
+    if (guardando) return;
+    try {
+      setGuardando(true);
+      const usuarioCreado = await controller.crearUsuario(nombre);
+      
+      Alert.alert('Usuario Creado', `${usuarioCreado.nombre} guardado con ID: ${usuarioCreado.id}`);
+      setNombre('');
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+
+  const renderUsuario = ({ item, index }) => (
+    <View style={styles.userItem}>
+      <View style={styles.userNumber}>
+        <Text style={styles.userNumberText}>{index + 1}</Text>
+      </View>
+      <View style={styles.userInfo}>
+        <Text style={styles.userName}>{item.nombre}</Text>
+        <Text style={styles.userId}>ID: {item.id}</Text>
+        <Text style={styles.userDate}>
+          {new Date(item.fechaCreacion).toLocaleDateString('es-MX', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </Text>
+      </View>
+      <View style={{ flexDirection: 'row', marginTop: 10 }}>
+        <TouchableOpacity onPress={() => {
+          setEditandoId(item.id);
+          setNuevoNombre(item.nombre);
+        }}>
+          <Text style={{ color: '#1976D2', marginRight: 15 }}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleEliminar(item.id)}>
+          <Text style={{ color: 'red' }}>Eliminar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  return (
     <View style={styles.container}>
+      
+     
+      {editandoId !== null && (
+        <View style={{
+          position: 'absolute',
+          top: '30%',
+          left: '10%',
+          right: '10%',
+          backgroundColor: '#fff',
+          padding: 20,
+          borderRadius: 12,
+          elevation: 5,
+          shadowColor: '#000',
+          shadowOpacity: 0.2,
+          shadowRadius: 10,
+          zIndex: 10,
+        }}>
+          <Text style={{ fontSize: 16, marginBottom: 10 }}>Editar nombre</Text>
+          <TextInput
+            style={styles.input}
+            value={nuevoNombre}
+            onChangeText={setNuevoNombre}
+            placeholder="Nuevo nombre"
+          />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+            <TouchableOpacity onPress={() => setEditandoId(null)}>
+              <Text style={{ color: 'gray' }}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={confirmarEdicion}>
+              <Text style={{ color: '#007AFF' }}>Guardar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
 
-      {/* Zona del encabezado */}
-
+      
       <Text style={styles.title}> INSERT & SELECT</Text>
       <Text style={styles.subtitle}>
         {Platform.OS === 'web' ? ' WEB (LocalStorage)' : ` ${Platform.OS.toUpperCase()} (SQLite)`}
       </Text>
 
-      {/* Zona del INSERT */}
-
+ 
       <View style={styles.insertSection}>
         <Text style={styles.sectionTitle}> Insertar Usuario</Text>
         
@@ -103,31 +194,21 @@ const renderUsuario = ({ item, index }) => (
           style={[styles.button, guardando && styles.buttonDisabled]} 
           onPress={handleAgregar}
           disabled={guardando} >
-
           <Text style={styles.buttonText}>
             {guardando ? ' Guardando...' : 'Agregar Usuario'}
           </Text>
-
         </TouchableOpacity>
-
       </View>
 
-
-
-      {/* Zona del SELECT */}
-
+      
       <View style={styles.selectSection}>
-
         <View style={styles.selectHeader}>
-
           <Text style={styles.sectionTitle}>Lista de Usuarios</Text>
-
           <TouchableOpacity 
             style={styles.refreshButton}
             onPress={cargarUsuarios} >
             <Text style={styles.refreshText}>Recargar</Text>
           </TouchableOpacity>
-
         </View>
 
         {loading ? (
@@ -135,7 +216,7 @@ const renderUsuario = ({ item, index }) => (
             <ActivityIndicator size="large" color="#007AFF" />
             <Text style={styles.loadingText}>Cargando usuarios...</Text>
           </View>
-           ) : (
+        ) : (
           <FlatList
             data={usuarios}
             keyExtractor={(item) => item.id.toString()}
@@ -149,11 +230,7 @@ const renderUsuario = ({ item, index }) => (
             contentContainerStyle={usuarios.length === 0 && styles.emptyList}
           />
         )}
-
-
       </View>
-
-
     </View>
   );
 }

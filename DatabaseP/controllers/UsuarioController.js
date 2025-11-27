@@ -1,4 +1,4 @@
-import { Usuario } from '../models/usuario';
+import { Usuario } from '../models/usuario'
 import DatabaseService from '../database/DatabaseService';
 
 export class UsuarioController {
@@ -20,7 +20,6 @@ async obtenerUsuarios() {
     throw new Error('No se pudieron cargar los usuarios');
   }
 }
-
 async crearUsuario(nombre) {
   try {
     // 1. Validar datos
@@ -43,7 +42,6 @@ async crearUsuario(nombre) {
     throw error;
   }
 }
-
 // Sistema de observadores para actualizar la vista automáticamente
 addListener(callback) {
   this.listeners.push(callback);
@@ -56,6 +54,26 @@ removeListener(callback) {
 notifyListeners() {
   this.listeners.forEach(callback => callback());
 }
+async actualizarUsuario(id, nuevoNombre) {
+  try {
+    Usuario.validar(nuevoNombre);
+    const actualizado = await DatabaseService.update(id, nuevoNombre.trim());
+    this.notifyListeners();
+    return actualizado;
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+    throw error;
+  }
+}
 
+async eliminarUsuario(id) {
+  try {
+    await DatabaseService.remove(id);
+    this.notifyListeners();
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error);
+    throw error;
+  }
+}
 
 }
